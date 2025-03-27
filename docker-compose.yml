@@ -1,17 +1,16 @@
-version: '2'
-
 services:
 
   wekandb:
-    image: mongo:3.2.12
+    image: mongo:6
     container_name: wekan-db
     restart: always
-    command: mongod --smallfiles --oplogSize 128
+    command: mongod --oplogSize 128
     networks:
       - wekan-tier
     expose:
       - 27017
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - wekan-db:/data/db
       - wekan-db-dump:/dump
 
@@ -26,6 +25,8 @@ services:
     environment:
       - MONGO_URL=mongodb://wekandb:27017/wekan
       - ROOT_URL=http://localhost
+      # Note: ignore the Internal-server-error at registration or define MAIL_URL and MAIL_FROM
+      # See also: https://github.com/wekan/wekan/blob/main/docker-compose.yml
     depends_on:
       - wekandb
 
